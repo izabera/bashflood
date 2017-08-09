@@ -29,8 +29,8 @@ cells=(
 # only support 12x12 with 4 colors for now
 drawboard () {
   tput cup 0
-  for i in {0..11}; do
-    for j in {0..11}; do
+  for i in 0 1 2 3 4 5 6 7 8 9 10 11; do
+    for j in 0 1 2 3 4 5 6 7 8 9 10 11; do
       echo -n "${cells[board[i*12+j]]}"
     done
     echo
@@ -48,8 +48,8 @@ drawscore () {
 tput smcup; tput civis; stty -echo
 trap 'tput rmcup; tput cnorm; stty sane' exit
 
-for i in {0..11}; do
-  for j in {0..11}; do
+for i in 0 1 2 3 4 5 6 7 8 9 10 11; do
+  for j in 0 1 2 3 4 5 6 7 8 9 10 11; do
     board[i*12+j]=$((RANDOM%4))
   done
 done
@@ -63,7 +63,7 @@ input () {
 
 update () {
   # avoid repeating over and over
-  filled=([0]=1)
+  filled=(1)
 
   # keep a stack of which cells we're updating
   stack=(0)
@@ -74,17 +74,17 @@ update () {
 
     if (( board[cell] == target )); then
       board[cell]=$replacement
-      (( cell > 11       )) && [[ ! ${filled[cell-12]} ]] && stack+=("$((cell-12))") filled[cell-12]=1 # up
-      (( cell < 11 * 12  )) && [[ ! ${filled[cell+12]} ]] && stack+=("$((cell+12))") filled[cell+12]=1 # down
-      (( cell % 12 != 0  )) && [[ ! ${filled[cell-1]}  ]] && stack+=("$((cell-1))")  filled[cell-1]=1  # left
-      (( cell % 12 != 11 )) && [[ ! ${filled[cell+1]}  ]] && stack+=("$((cell+1))")  filled[cell+1]=1  # right
+      (( cell > 11       )) && [[ ! ${filled[cell-12]} ]] && { stack+=("$((cell-12))"); filled[cell-12]=1; } # up
+      (( cell < 11 * 12  )) && [[ ! ${filled[cell+12]} ]] && { stack+=("$((cell+12))"); filled[cell+12]=1; } # down
+      (( cell % 12 != 0  )) && [[ ! ${filled[cell-1]}  ]] && { stack+=("$((cell-1))") ; filled[cell-1]=1 ; } # left
+      (( cell % 12 != 11 )) && [[ ! ${filled[cell+1]}  ]] && { stack+=("$((cell+1))") ; filled[cell+1]=1 ; } # right
     fi
   done
 }
 
-shopt -s extglob
+shopt -s extglob 2>/dev/null
 checkwin () {
-  printf -v string %s "${board[@]}"
+  string=$(printf %s "${board[@]}")
   if [[ $string = +("${string:0:1}") ]]; then
     drawboard
     printf '\n%s        you win!        ' "$sgr0"
@@ -94,7 +94,8 @@ checkwin () {
 }
 
 limit=15
-for (( times = 1; times <= limit; times++ )) do
+while (( times++ < limit )); do
+#for (( times = 1; times <= limit; times++ )) do
   drawboard
   drawscore
   input
