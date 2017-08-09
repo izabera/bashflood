@@ -57,7 +57,7 @@ input () {
 
 update () {
   # avoid repeating over and over
-  filled=([0]=)
+  filled=([0]=1)
 
   # keep a stack of which cells we're updating
   stack=(0)
@@ -68,10 +68,10 @@ update () {
 
     if (( board[cell] == target )); then
       board[cell]=$replacement
-      (( cell > 11       )) && [[ ! -v filled[cell-12] ]] && stack+=("$((cell-12))") filled[cell-12]= # up
-      (( cell < 11 * 12  )) && [[ ! -v filled[cell+12] ]] && stack+=("$((cell+12))") filled[cell+12]= # down
-      (( cell % 12 != 0  )) && [[ ! -v filled[cell-1]  ]] && stack+=("$((cell-1))")  filled[cell-1]=  # left
-      (( cell % 12 != 11 )) && [[ ! -v filled[cell+1]  ]] && stack+=("$((cell+1))")  filled[cell+1]=  # right
+      (( cell > 11       )) && [[ ! ${filled[cell-12]} ]] && stack+=("$((cell-12))") filled[cell-12]=1 # up
+      (( cell < 11 * 12  )) && [[ ! ${filled[cell+12]} ]] && stack+=("$((cell+12))") filled[cell+12]=1 # down
+      (( cell % 12 != 0  )) && [[ ! ${filled[cell-1]}  ]] && stack+=("$((cell-1))")  filled[cell-1]=1  # left
+      (( cell % 12 != 11 )) && [[ ! ${filled[cell+1]}  ]] && stack+=("$((cell+1))")  filled[cell+1]=1  # right
     fi
   done
 }
