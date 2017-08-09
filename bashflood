@@ -87,7 +87,7 @@ checkwin () {
   fi
 }
 
-limit=95
+limit=15
 for (( times = 1; times <= limit; times++ )) do
   drawboard
   drawscore
