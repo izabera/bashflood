@@ -79,7 +79,7 @@ update () {
 shopt -s extglob
 checkwin () {
   printf -v string %s "${board[@]}"
-  if [[ $string = +(0) || $string = +(1) || $string = +(2) || $string = +(3) ]]; then
+  if [[ $string = +("${string:0:1}") ]]; then
     drawboard
     printf '\n%s        you win!        ' "$sgr0"
     read -rn1
@@ -104,5 +104,6 @@ for (( times = 1; times <= limit; times++ )) do
   checkwin
 done
 
+drawboard
 printf '\n%s        you lose        ' "$sgr0"
 read -rn1
