@@ -5,6 +5,12 @@ if [[ $1 = -h || $1 == --help ]]; then
   exit
 fi
 
+cols=$(tput cols) lines=$(tput lines)
+
+if command -v resize &>/dev/null; then
+  resize -s "$((lines > 18 ? lines : 18))" "$((cols > 24 ? cols : 24))" &>/dev/null
+fi
+
 colors=(
   "$(tput setab 1)"
   "$(tput setab 2)"
