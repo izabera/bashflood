@@ -63,8 +63,8 @@ update () {
   stack=(0)
 
   while (( ${#stack[@]} )); do
-    cell=${stack[-1]}
-    unset 'stack[-1]'
+    cell=${stack[${#stack[@]}-1]}
+    unset "stack[${#stack[@]}-1]"
 
     if (( board[cell] == target )); then
       board[cell]=$replacement
@@ -76,13 +76,13 @@ update () {
   done
 }
 
-regex='^(.)\1+$'
+shopt -s extglob
 checkwin () {
   printf -v string %s "${board[@]}"
-  if [[ $string =~ $regex ]]; then
+  if [[ $string = +(0) || $string = +(1) || $string = +(2) || $string = +(3) ]]; then
     drawboard
     printf '\n%s        you win!        ' "$sgr0"
-    read
+    read -rn1
     exit
   fi
 }
@@ -105,4 +105,4 @@ for (( times = 1; times <= limit; times++ )) do
 done
 
 printf '\n%s        you lose        ' "$sgr0"
-read
+read -rn1
